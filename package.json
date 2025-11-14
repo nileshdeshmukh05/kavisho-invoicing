@@ -1,0 +1,36 @@
+{
+  "name": "kavisho-invoicing",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "electron": "electron .",
+    "dist": "electron-builder --config electron-builder.yml",
+    "build:web": "echo 'Build web assets (if using React)'; exit 0"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.6.0"
+  },
+  "build": {
+    "appId": "com.kavisho.invoicing",
+    "productName": "Kavisho Invoicing",
+    "files": [
+      "**/*"
+    ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

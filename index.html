@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kavisho Invoicing</title>
+  <style>
+    :root{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif}
+    body{margin:0;background:#f3f4f8;color:#0f172a}
+    .app{max-width:980px;margin:18px auto;padding:18px}
+    header{display:flex;align-items:center;gap:12px}
+    .logo{width:64px;height:64px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .card{background:#fff;border-radius:10px;padding:14px;box-shadow:0 6px 18px rgba(15,23,42,0.06);margin-top:14px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    input,select{width:100%;padding:8px;border:1px solid #e6e9ef;border-radius:6px}
+    button{background:#0ea5e9;color:white;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:8px;border-bottom:1px solid #eef2f7;text-align:left}
+    @media(max-width:700px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">SG</div>
+      <div>
+        <h2 id="companyName">Sikkaa Global Trades & Services</h2>
+        <div class="muted">B-102 Nimisha Pride, Sector 09, New Panvel</div>
+      </div>
+    </header>
+
+    <div class="card">
+      <h3>Create Invoice</h3>
+      <div class="grid">
+        <div>
+          <label>Customer</label>
+          <input id="cust" placeholder="Customer name or select from master"/>
+        </div>
+        <div>
+          <label>Invoice Date</label>
+          <input id="invDate" type="date"/>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div>
+          <label>Item / Description</label>
+          <input id="item" />
+        </div>
+        <div>
+          <label>Qty</label>
+          <input id="qty" type="number" value="1"/>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top:8px">
+        <div>
+          <label>Rate (₹)</label>
+          <input id="rate" type="number" value="0"/>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:8px">
+          <button onclick="addInvoice()">Save Invoice</button>
+          <button onclick="exportPDF()">Export PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Transactions</h3>
+      <div id="list"></div>
+    </div>
+
+    <div class="card">
+      <h3>Notes / Firebase</h3>
+      <p>This app is a starter scaffold. To enable Firebase online sync, open <code>firebase-config-example.js</code> and paste your Firebase config, then include Firebase SDK and integrate.</p>
+    </div>
+  </div>
+
+<script>
+function loadInvoices(){
+  const data = JSON.parse(localStorage.getItem('invoices') || '[]');
+  if(data.length === 0){
+    document.getElementById('list').innerHTML = '<div class="muted">No transactions yet</div>';
+    return;
+  }
+  let html = '<table><tr><th>Inv#</th><th>Customer</th><th>Item</th><th>Qty</th><th>Rate</th><th>Total</th></tr>';
+  data.forEach((d,i)=>{
+    html += `<tr><td>${d.invNo || ('INV-'+String(i+1).padStart(4,'0'))}</td><td>${d.cust}</td><td>${d.item}</td><td>${d.qty}</td><td>${d.rate}</td><td>${d.total}</td></tr>`;
+  });
+  html += '</table>';
+  document.getElementById('list').innerHTML = html;
+}
+
+function addInvoice(){
+  const cust = document.getElementById('cust').value;
+  const item = document.getElementById('item').value;
+  const qty = Number(document.getElementById('qty').value) || 1;
+  const rate = Number(document.getElementById('rate').value) || 0;
+  const date = document.getElementById('invDate').value || new Date().toISOString().slice(0,10);
+
+  if(!cust || !item) return alert('Enter customer and item');
+
+  const old = JSON.parse(localStorage.getItem('invoices') || '[]');
+  const invNo = 'INV-' + String(old.length + 1).padStart(6,'0');
+  const inv = { invNo, cust, item, qty, rate, date, total: qty * rate, status: 'Pending' };
+  old.push(inv);
+  localStorage.setItem('invoices', JSON.stringify(old));
+  loadInvoices();
+  alert('Invoice saved locally. To sync online, connect Firebase as per README.');
+}
+
+function exportPDF(){
+  window.print();
+}
+
+loadInvoices();
+</script>
+</body>
+</html>

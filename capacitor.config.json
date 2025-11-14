@@ -1,0 +1,6 @@
+{
+  "appId": "com.kavisho.invoicing",
+  "appName": "Kavisho Invoicing",
+  "webDir": "build",
+  "bundledWebRuntime": false
+}

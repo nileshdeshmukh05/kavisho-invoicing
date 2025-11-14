@@ -1,0 +1,14 @@
+appId: com.kavisho.invoicing
+productName: Kavisho Invoicing
+directories:
+  buildResources: build
+files:
+  - '**/*'
+win:
+  target:
+    - nsis
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
